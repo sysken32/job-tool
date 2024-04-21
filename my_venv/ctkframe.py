@@ -2,6 +2,7 @@ from bs4 import BeautifulSoup
 import requests
 import customtkinter as ctk
 import pyperclip
+import webbrowser
 
 def build_frame():
     global root
@@ -25,17 +26,24 @@ def entry(root):
     global url_var
     global enter
     url_var = ctk.StringVar()
-    enter = ctk.CTkEntry(root, width=175,height=25,corner_radius=5)
-    enter.place(relx=0.5, rely=0.1, anchor=ctk.CENTER)
+    enter = ctk.CTkEntry(root, width=500,height=25,corner_radius=5)
+    enter.place(relx=0.5, rely=0.4, anchor=ctk.CENTER)
+    
+    def llm_open():
+        webbrowser.open("https://www.meta.ai/")
     
     b1 = ctk.CTkButton(root, text="LinkedIn", fg_color="#303030", command=copy_url)
     b1.place(relx=0.5, rely=0.6, anchor=ctk.CENTER)
-    b2 = ctk.CTkButton(root, text="scrape", command=scrape)
-    b2.place(relx=0.5, rely=0.7, anchor=ctk.CENTER)
+    b2 = ctk.CTkButton(root, text="Scrape Webpage",fg_color="#303030", command=scrape)
+    b2.place(relx=0.3, rely=0.6, anchor=ctk.CENTER)
+    b3 = ctk.CTkButton(root,text="LLM",fg_color="#303030", command=llm_open)
+    b3.place(relx=0.7, rely=0.6, anchor=ctk.CENTER)
+    
     
     global box
     box = ctk.CTkTextbox(root,height=100, width=500, corner_radius=2)
     box.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
+    box.configure(state="disabled")
     
 
     
@@ -71,8 +79,10 @@ def scrape():
                     else:
                         keyword_counter[keyword] = 1
                     if keyword not in already_scraped:
+                        box.configure(state="normal")
                         scrape_fill(keyword)
                         already_scraped.add(keyword)
+                        box.configure(state="disabled")
     except:
         print("failed")
        
