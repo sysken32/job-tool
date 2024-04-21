@@ -59,4 +59,5 @@ def scrape():
     except:
         print("failed")
 
-    
+
+build_frame()

@@ -8,7 +8,7 @@ def build_frame():
     root = ctk.CTk()
     ctk.set_appearance_mode("dark")
     root.title('Root Scrapper')
-    root.geometry(center_frame(root, 300, 300))
+    root.geometry(center_frame(root, 750, 750))
     entry(root)
     
     root.mainloop()
@@ -32,14 +32,23 @@ def entry(root):
     b1.place(relx=0.5, rely=0.6, anchor=ctk.CENTER)
     b2 = ctk.CTkButton(root, text="scrape", command=scrape)
     b2.place(relx=0.5, rely=0.7, anchor=ctk.CENTER)
+    
+    global box
+    box = ctk.CTkTextbox(root,height=100, width=500, corner_radius=2)
+    box.place(relx=0.5, rely=0.5, anchor=ctk.CENTER)
+    
 
+    
 def copy_url():
     url = enter.get()
     pyperclip.copy(url)
 
 
 def scrape():
-    keywords_list = ["Database", "compTIA", "certify", 'division', 'Condominium'] #update this to all keywords for resumes/coverletters
+    def scrape_fill(keyword):
+        box.insert('0.0', keyword)  
+        
+    keywords_list = ["Database", "compTIA", "certify", 'division', 'Condominium', 'collection', 'Java'] #update this to all keywords for resumes/coverletters
     #scrape for keywords in pasted url into enter box
     #rewrite to scrape through list of linkedin keywords
     
@@ -47,13 +56,25 @@ def scrape():
     url = requests.get((enter.get())) 
     soup = BeautifulSoup(url.content, 'html.parser')
     
+    counter = 0
+    
     try:
         link = soup.find_all(['p', 'div', 'h1', 'h2', 'h3', 'h4'])
+        keyword_counter = {}
+        already_scraped = set()
+        
         for word in link:
             for keyword in keywords_list:
                 if keyword in word.text:
-                    print(keyword)
-
+                    if keyword in keyword_counter:
+                        keyword_counter[keyword] += 1
+                    else:
+                        keyword_counter[keyword] = 1
+                    if keyword not in already_scraped:
+                        scrape_fill(keyword)
+                        already_scraped.add(keyword)
     except:
         print("failed")
+       
+        
 
